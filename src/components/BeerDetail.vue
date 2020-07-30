@@ -15,14 +15,13 @@
               <li v-for="(malt, index) in beer.ingredients.malt" :malt="malt" :key="index">{{malt.name}}</li>
           </ul>
           <h4>Hops</h4>
-            <ul>
-              <li v-for="(hop, index) in beer.ingredients.hops" :hop="hop" :key="index">{{hop.name}}</li>
+            <ul >
+              <li v-for="(hop, index) in filterDups" :hop="hop" :key="index">{{hop.name}}</li>
             </ul>
             <h4>Yeast</h4>
             <ul>
                 <li>{{beer.ingredients.yeast}}</li>
             </ul>
-          <!-- <p v-for="(i, index) in beer.ingredients.malt" :i="i" :key="index">{{i.name}}</p> -->
       </div>
 
       
@@ -46,17 +45,28 @@ export default {
         eventBus.$on('favourite-beers', (beers) => {this.favBeers = beers})
     },
     props: ['favourite-beer'],
+    computed: {
+        filterDups() {
+            const list = this.beer.ingredients.hops;
+            // return [...new Set(list.name)];
+            console.log(list);
+            const newList = list.filter((value, index) => list.indexOf(value) === index);
+            console.log(newList);
+            return newList;
+        }
+    },
     methods: {
         handleClick() {
             eventBus.$emit('favourite-beer', this.beer)
         },
         handleRemove() {
             eventBus.$emit('unfavourite-beer', this.beer)
-        }
+        },
     },
     components: {
         'favourite-beers' : FavouriteBeers
     }
+    
 
 }
 </script>
